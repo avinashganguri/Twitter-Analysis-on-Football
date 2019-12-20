@@ -1,0 +1,133 @@
+<!-- Styles -->
+<style>
+#chartdiv {
+  width: 100%;
+  height: 500px;
+}
+</style>
+
+<!-- Resources -->
+<script src="https://www.amcharts.com/lib/4/core.js"></script>
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+
+<!-- Chart code -->
+<script>
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+// create chart
+var chart = am4core.create("chartdiv", am4charts.TreeMap);
+chart.hiddenState.properties.opacity = 0;
+
+chart.data = [
+{
+  name: "Second",
+  children: [
+    {
+      name: "United states",
+      value: 70
+    },
+    {
+      name: "ST. Petersburg",
+      value: 51
+    },
+    {
+      name: "dallas, TX",
+      value: 50
+    },
+    {
+      name: "Charlotte",
+      value: 50
+    },
+    {
+      name: "Seattle",
+      value: 40
+    }
+  ]
+},
+{
+  name: "Fourth",
+  children: [
+    {
+      name: "New York",
+      value: 30
+    },
+    {
+      name: "Florida",
+      value: 40
+    },
+    {
+      name: "Circleville",
+      value: 40
+    },
+    {
+      name: "Philadelphia",
+      value: 40
+    },
+    
+  ]
+},
+];
+
+chart.colors.step = 2;
+
+// define data fields
+chart.dataFields.value = "value";
+chart.dataFields.name = "name";
+chart.dataFields.children = "children";
+chart.layoutAlgorithm = chart.binaryTree;
+
+chart.zoomable = false;
+
+// level 0 series template
+var level0SeriesTemplate = chart.seriesTemplates.create("0");
+var level0ColumnTemplate = level0SeriesTemplate.columns.template;
+
+level0ColumnTemplate.column.cornerRadius(10, 10, 10, 10);
+level0ColumnTemplate.fillOpacity = 0;
+level0ColumnTemplate.strokeWidth = 4;
+level0ColumnTemplate.strokeOpacity = 0;
+
+// level 1 series template
+var level1SeriesTemplate = chart.seriesTemplates.create("1");
+level1SeriesTemplate.tooltip.dy = - 15;
+level1SeriesTemplate.tooltip.pointerOrientation = "vertical";
+
+var level1ColumnTemplate = level1SeriesTemplate.columns.template;
+
+level1SeriesTemplate.tooltip.animationDuration = 0;
+level1SeriesTemplate.strokeOpacity = 1;
+
+level1ColumnTemplate.column.cornerRadius(10, 10, 10, 10)
+level1ColumnTemplate.fillOpacity = 1;
+level1ColumnTemplate.strokeWidth = 4;
+level1ColumnTemplate.stroke = am4core.color("#ffffff");
+
+var bullet1 = level1SeriesTemplate.bullets.push(new am4charts.LabelBullet());
+bullet1.locationY = 0.5;
+bullet1.locationX = 0.5;
+bullet1.label.text = "{name}";
+bullet1.label.fill = am4core.color("#ffffff");
+bullet1.interactionsEnabled = false;
+chart.maxLevels = 2;
+
+
+setInterval(function () {
+  for (var i = 0; i < chart.dataItems.length; i++) {
+    var dataItem = chart.dataItems.getIndex(i);
+    for (var c = 0; c < dataItem.children.length; c++) {
+      var child = dataItem.children.getIndex(c);
+      child.value = child.value + Math.round(child.value * Math.random() * 0.4 - 0.2);
+    }
+  }
+}, 2000)
+
+}); // end am4core.ready()
+</script>
+
+<!-- HTML -->
+<div id="chartdiv"></div>
